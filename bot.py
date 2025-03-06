@@ -4,7 +4,7 @@ import logging
 from telethon import TelegramClient, events
 from config import API_ID, API_HASH, BOT_TOKEN
 
-# Konfigurasi logging untuk debugging
+# Konfigurasi logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Inisialisasi bot
@@ -30,11 +30,6 @@ conn.commit()
 conn.close()
 
 def add_gift(contact, name, model, background, symbol, series, price, link):
-    # Validasi format link NFT
-    pattern = r"^https:\/\/t\.me\/[A-Za-z0-9\-_]+\/[A-Za-z0-9\-_]+$"
-    if not re.match(pattern, link):
-        return "⚠️ Format link NFT tidak valid! Gunakan format yang benar seperti: https://t.me/nft/LolPop-173409"
-    
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
     
@@ -57,12 +52,13 @@ async def post_nft(event):
         reply_msg = await event.get_reply_message()
         text = reply_msg.text.strip()
 
-        # Parsing format pesan
-        match = re.search(r"contact : (.+)\nnama gift : (.+)\nmodel : (.+)\nlatar : (.+)\nsimbol : (.+)\nseri : #(\d+)\nharga : (.+)\n(link: .+)", text)
-        
+        # Perbaikan regex untuk menangkap format dengan benar
+        match = re.search(r"contact : (.+)\nnama gift : (.+)\nmodel : (.+)\nlatar : (.+)\nsimbol : (.+)\nseri : #?(\d+)\nharga : (.+)\nlink : (https:\/\/t\.me\/[A-Za-z0-9\-_]+\/[A-Za-z0-9\-_]+)", text)
+
         if match:
             contact, name, model, background, symbol, series, price, link = match.groups()
-            response = add_gift(contact, name, model, background, symbol, f"#{series}", price, link)
+            series = f"#{series}"  # Tambahkan "#" secara manual jika hilang
+            response = add_gift(contact, name, model, background, symbol, series, price, link)
             await event.reply(response)
         else:
             await event.reply("⚠️ Format tidak sesuai! Pastikan format pesan sesuai.")
