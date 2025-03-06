@@ -16,14 +16,21 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS gifts (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    contact TEXT NOT NULL,
+    name TEXT NOT NULL,
+    model TEXT NOT NULL,
+    background TEXT NOT NULL,
+    symbol TEXT NOT NULL,
+    series TEXT NOT NULL,
+    price TEXT NOT NULL,
     link TEXT UNIQUE NOT NULL
 )
 """)
 conn.commit()
 conn.close()
 
-def add_gift(link):
-    # Gunakan regex yang benar untuk menangani format link NFT
+def add_gift(contact, name, model, background, symbol, series, price, link):
+    # Validasi format link NFT
     pattern = r"^https:\/\/t\.me\/[A-Za-z0-9\-_]+\/[A-Za-z0-9\-_]+$"
     if not re.match(pattern, link):
         return "⚠️ Format link NFT tidak valid! Gunakan format yang benar seperti: https://t.me/nft/LolPop-173409"
@@ -32,7 +39,10 @@ def add_gift(link):
     cursor = conn.cursor()
     
     try:
-        cursor.execute("INSERT INTO gifts (link) VALUES (?)", (link,))
+        cursor.execute("""
+            INSERT INTO gifts (contact, name, model, background, symbol, series, price, link) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (contact, name, model, background, symbol, series, price, link))
         conn.commit()
         response = "✅ NFT berhasil disimpan!"
     except sqlite3.IntegrityError:
@@ -41,18 +51,23 @@ def add_gift(link):
     conn.close()
     return response
 
-@bot.on(events.NewMessage(pattern=r"^/post (.+)"))
+@bot.on(events.NewMessage(pattern=r"^/post$"))
 async def post_nft(event):
-    logging.debug(f"Pesan diterima: {event.raw_text}")
+    if event.is_reply:
+        reply_msg = await event.get_reply_message()
+        text = reply_msg.text.strip()
 
-    if event.is_private or event.is_group:
-        link = event.pattern_match.group(1).strip()
-        logging.debug(f"Link NFT yang diterima: {link}")
+        # Parsing format pesan
+        match = re.search(r"contact : (.+)\nnama gift : (.+)\nmodel : (.+)\nlatar : (.+)\nsimbol : (.+)\nseri : #(\d+)\nharga : (.+)\n(link: .+)", text)
         
-        response = add_gift(link)
-        logging.debug(f"Respon yang dikirim: {response}")
-        
-        await event.reply(response)
+        if match:
+            contact, name, model, background, symbol, series, price, link = match.groups()
+            response = add_gift(contact, name, model, background, symbol, f"#{series}", price, link)
+            await event.reply(response)
+        else:
+            await event.reply("⚠️ Format tidak sesuai! Pastikan format pesan sesuai.")
+    else:
+        await event.reply("⚠️ Gunakan perintah ini dengan mereply pesan yang berisi informasi NFT.")
 
 # Jalankan bot
 print("✅ Bot berjalan...")
