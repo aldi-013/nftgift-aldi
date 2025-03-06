@@ -22,12 +22,11 @@ CREATE TABLE IF NOT EXISTS gifts (
 conn.commit()
 conn.close()
 
-# Fungsi untuk menambahkan NFT ke database
 def add_gift(link):
-    # Pola regex yang lebih fleksibel untuk menangani berbagai format link
-    pattern = r"^https:\/\/t\.me\/(?:c\/\d+\/\d+|[A-Za-z0-9\-_]+\/\d+)$"
+    # Gunakan regex yang benar untuk menangani format link NFT
+    pattern = r"^https:\/\/t\.me\/[A-Za-z0-9\-_]+\/[A-Za-z0-9\-_]+$"
     if not re.match(pattern, link):
-        return "⚠️ Format link NFT tidak valid! Gunakan: https://t.me/xxx/123"
+        return "⚠️ Format link NFT tidak valid! Gunakan format yang benar seperti: https://t.me/nft/LolPop-173409"
     
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
@@ -42,16 +41,18 @@ def add_gift(link):
     conn.close()
     return response
 
-# Handler untuk perintah /post {link_nft}
-@bot.on(events.NewMessage(pattern=r"^/post (.+)", incoming=True))
+@bot.on(events.NewMessage(pattern=r"^/post (.+)"))
 async def post_nft(event):
     logging.debug(f"Pesan diterima: {event.raw_text}")
 
     if event.is_private or event.is_group:
         link = event.pattern_match.group(1).strip()
+        logging.debug(f"Link NFT yang diterima: {link}")
+        
         response = add_gift(link)
+        logging.debug(f"Respon yang dikirim: {response}")
+        
         await event.reply(response)
-        logging.debug(f"Balasan terkirim: {response}")
 
 # Jalankan bot
 print("✅ Bot berjalan...")
