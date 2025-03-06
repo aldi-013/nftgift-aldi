@@ -1,29 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
-  fetch("data.json")
+  fetch("http://localhost:5000/api/gifts") // Ambil data dari backend Flask
     .then(response => response.json())
     .then(data => {
       let gallery = document.getElementById("gallery");
+      gallery.innerHTML = ""; // Kosongkan sebelum menambah data baru
       data.forEach(item => {
         let div = document.createElement("div");
         div.className = "gift-item";
-        div.innerHTML = `<a href="${item.link}" target="_blank">
-                                    <img src="${item.link}" alt="NFT Gift">
-                                 </a>`;
+        div.innerHTML = `
+          <a href="${item.link}" target="_blank">
+            <img src="${item.link}" alt="NFT Gift">
+          </a>
+          <p><b>${item.name}</b> - ${item.price}</p>
+        `;
         gallery.appendChild(div);
       });
-    });
+    })
+    .catch(error => console.error("Gagal mengambil data:", error));
 });
-
-function searchGift() {
-  let input = document.getElementById("search").value.toLowerCase();
-  let gifts = document.querySelectorAll(".gift-item");
-
-  gifts.forEach(gift => {
-    let link = gift.querySelector("a").href.toLowerCase();
-    if (link.includes(input)) {
-      gift.style.display = "block";
-    } else {
-      gift.style.display = "none";
-    }
-  });
-}
