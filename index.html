@@ -3,17 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gift NFT Gallery</title>
+    <title>Gift NFT Telegram</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <h1>Gift NFT Telegram</h1>
+    <input type="text" id="search" placeholder="Cari NFT..." onkeyup="searchNFT()">
+    <div id="gallery"></div>
 
-    <h1>Gift NFT Gallery</h1>
-    
-    <input type="text" id="search" placeholder="Cari gift..." onkeyup="searchGift()">
-    
-    <div id="gallery" class="gallery"></div>
+    <script>
+        async function loadNFTs() {
+            const response = await fetch("http://localhost:8000/gifts");
+            const data = await response.json();
+            const gallery = document.getElementById("gallery");
 
-    <script src="script.js"></script>
+            gallery.innerHTML = "";
+            data.gifts.forEach(nft => {
+                const div = document.createElement("div");
+                div.className = "nft-card";
+                div.innerHTML = `
+                    <img src="${nft[8]}" alt="${nft[2]}">
+                    <p><strong>${nft[2]}</strong></p>
+                    <p>Model: ${nft[3]}</p>
+                    <p>Latar: ${nft[4]}</p>
+                    <p>Simbol: ${nft[5]}</p>
+                    <p>Seri: ${nft[6]}</p>
+                    <p>Harga: ${nft[7]}</p>
+                `;
+                gallery.appendChild(div);
+            });
+        }
+
+        function searchNFT() {
+            const searchValue = document.getElementById("search").value.toLowerCase();
+            const cards = document.querySelectorAll(".nft-card");
+
+            cards.forEach(card => {
+                const name = card.querySelector("p strong").textContent.toLowerCase();
+                card.style.display = name.includes(searchValue) ? "block" : "none";
+            });
+        }
+
+        window.onload = loadNFTs;
+    </script>
 </body>
 </html>
