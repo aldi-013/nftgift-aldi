@@ -1,46 +1,104 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery NFT</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #gallery { display: flex; flex-wrap: wrap; justify-content: center; }
-        .gift-item { margin: 10px; padding: 10px; border: 1px solid #ddd; text-align: center; }
-        .gift-item img { width: 100px; height: 100px; display: block; }
-    </style>
-</head>
-<body>
-
-    <h2>Gallery NFT</h2>
-    <div id="gallery"></div>
-
-    <script>
-        async function loadNFTs() {
-            let response = await fetch("http://206.189.44.231:5000/api/nfts");
-            let nfts = await response.json();
-            let gallery = document.getElementById("gallery");
-            gallery.innerHTML = "";
-
-            nfts.forEach(nft => {
-                let div = document.createElement("div");
-                div.className = "gift-item";
-                div.innerHTML = `
-                    <a href="${nft.link}" target="_blank">
-                        <img src="${nft.link}" alt="NFT Gift">
-                    </a>
-                    <p>${nft.name} - ${nft.series}</p>
-                    <p>${nft.price} TON</p>
-                `;
-                gallery.appendChild(div);
-            });
-        }
-
-        // Muat NFT setiap 5 detik agar data baru muncul otomatis
-        setInterval(loadNFTs, 5000);
-        loadNFTs();
-    </script>
-
-</body>
+<html>
+ <head>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+ </head>
+ <body class="bg-black text-white">
+  <div class="flex justify-center items-center py-4">
+   <div class="relative w-3/4">
+    <input class="w-full py-2 px-4 rounded-full bg-white text-black" placeholder="Search..." type="text"/>
+    <i class="fas fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-black">
+    </i>
+   </div>
+  </div>
+  <div class="grid grid-cols-2 gap-4 px-4">
+   <div class="bg-white">
+    <img alt="Placeholder image" class="w-full" height="300" src="https://i.imgur.com/Oj6lSCC.jpeg" width="300" />
+    <div class="bg-gray-800 p-4">
+     <a href="https://t.me/nft/LolPop-173409" class="font-bold text-blue-400 hover:underline">
+       Lol Pop #173409
+     </a>
+     <p>
+      model : bubblegum 0,5%
+     </p>
+     <p>
+      latar : onyx black 2%
+     </p>
+     <p>
+      symbol : piggy 1,5%
+     </p>
+    </div>
+   </div>
+   <div class="bg-white">
+    <img alt="Placeholder image" class="w-full" height="300" src="https://i.imgur.com/Oj6lSCC.jpeg" width="300" />
+    <div class="bg-gray-800 p-4">
+     <a href="https://t.me/nft/LolPop-173409" class="font-bold text-blue-400 hover:underline">
+       Lol Pop #173409
+     </a>
+     <p>
+      model : bubblegum 0,5%
+     </p>
+     <p>
+      latar : onyx black 2%
+     </p>
+     <p>
+      symbol : piggy 1,5%
+     </p>
+    </div>
+   </div>
+   <div class="bg-white">
+    <img alt="Placeholder image" class="w-full" height="300" src="https://i.imgur.com/Oj6lSCC.jpeg" width="300" />
+    <div class="bg-gray-800 p-4">
+     <a href="https://t.me/nft/LolPop-173409" class="font-bold text-blue-400 hover:underline">
+      Lol Pop #173409
+     </a>
+     <p>
+      model : einstein 0,5%
+     </p>
+     <p>
+      latar : lavender 2%
+     </p>
+     <p>
+      symbol : pizza slice 0,4%
+     </p>
+    </div>
+   </div>
+   <div class="bg-white">
+    <img alt="Placeholder image" class="w-full" height="300" src="https://i.imgur.com/Oj6lSCC.jpeg" width="300" />
+    <div class="bg-gray-800 p-4">
+     <a href="https://example.com/lol-pop-12345" class="font-bold text-blue-400 hover:underline">
+      Lol Pop #12345
+     </a>
+     <p>
+      model : bubblegum 0,5%
+     </p>
+     <p>
+      latar : onyx black 2%
+     </p>
+     <p>
+      symbol : piggy 1,5%
+     </p>
+    </div>
+   </div>
+  </div>
+  <div class="bg-blue-800 text-center py-4 mt-4">
+   <div class="grid grid-cols-4 text-white font-bold">
+    <div>
+     nama
+     <br/>
+     gift
+    </div>
+    <div>
+     model
+    </div>
+    <div>
+     latar
+    </div>
+    <div>
+     symbol
+    </div>
+   </div>
+  </div>
+ </body>
 </html>
