@@ -28,18 +28,18 @@
             transform: translateX(3px);
             box-shadow: 3px 3px 12px rgba(255, 255, 255, 0.3);
         }
-        /* Tombol Scroll ke Atas */
+        /* Tombol Scroll ke Atas di atas menu Simbol */
         #scrollToTop {
             display: none;
             position: fixed;
-            bottom: 80px;
+            bottom: 90px; /* Sesuai dengan tinggi menu */
             right: 20px;
             background-color: #4fa3ff;
             color: white;
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             font-size: 20px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -500,47 +500,80 @@
             </div>
         </div>
 
-        <!-- Tombol Scroll ke Atas -->
-        <button id="scrollToTop" onclick="scrollToTop()">
-            ↑
-        </button>
+    <!-- Tombol Scroll ke Atas -->
+    <button id="scrollToTop" onclick="scrollToTop()">↑</button>
 
-        <!-- Bottom Navigation -->
-        <div class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
-            <div class="flex justify-around">
-                <button class="filter-btn flex flex-col items-center text-blue-500 active" onclick="setFilter('name', this)">
-                    <i class="fas fa-gift text-lg"></i>
-                    <div>Gift</div>
-                </button>
-                <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('model', this)">
-                    <i class="fas fa-box text-lg"></i>
-                    <div>Model</div>
-                </button>
-                <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('all', this)">
-                    <i class="fas fa-home text-lg"></i>
-                    <div>Home</div>
-                </button>
-                <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('latar', this)">
-                    <i class="fas fa-image text-lg"></i>
-                    <div>Latar</div>
-                </button>
-                <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('simbol', this)">
-                    <i class="fas fa-star text-lg"></i>
-                    <div>Simbol</div>
-                </button>
-            </div>
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
+        <div class="flex justify-around">
+            <button class="filter-btn flex flex-col items-center text-blue-500 active" onclick="setFilter('name', this)">
+                <i class="fas fa-gift text-lg"></i>
+                <div>Gift</div>
+            </button>
+            <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('model', this)">
+                <i class="fas fa-box text-lg"></i>
+                <div>Model</div>
+            </button>
+            <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('all', this)">
+                <i class="fas fa-home text-lg"></i>
+                <div>Home</div>
+            </button>
+            <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('latar', this)">
+                <i class="fas fa-image text-lg"></i>
+                <div>Latar</div>
+            </button>
+            <button class="filter-btn flex flex-col items-center text-gray-400 relative" onclick="setFilter('simbol', this)">
+                <i class="fas fa-star text-lg"></i>
+                <div>Simbol</div>
+            </button>
         </div>
     </div>
 
     <script>
+        let activeFilter = 'name';
+
+        function searchProducts() {
+            let input = document.getElementById('searchInput').value.toLowerCase();
+            let cards = document.getElementsByClassName('product-card');
+
+            for (let card of cards) {
+                let filterValue = card.getAttribute(`data-${activeFilter}`).toLowerCase();
+                card.style.display = filterValue.includes(input) ? 'block' : 'none';
+            }
+        }
+
+        function setFilter(filterType, element) {
+            activeFilter = filterType;
+            document.getElementById('searchInput').placeholder = `Search ${filterType}...`;
+            searchProducts();
+
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('text-blue-500', 'active');
+                btn.classList.add('text-gray-400');
+            });
+
+            element.classList.add('text-blue-500', 'active');
+        }
+
+        function toggleClearButton() {
+            let input = document.getElementById('searchInput');
+            let clearButton = document.getElementById('clearSearch');
+            clearButton.classList.toggle('hidden', input.value.length === 0);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            searchProducts();
+            toggleClearButton();
+        }
+
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         window.addEventListener('scroll', function () {
-            let scrollToTopBtn = document.getElementById('scrollToTop');
+            let scrollToTopBtn = document.getElementById("scrollToTop");
             let firstFormat = document.querySelector('.format-box');
-            
             if (firstFormat && window.scrollY > firstFormat.offsetTop) {
                 scrollToTopBtn.style.display = 'block';
             } else {
