@@ -1,567 +1,242 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NFT GIFT LUCKY JASTIP</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <style>
-        .filter-btn {
-            transition: color 0.3s ease-in-out;
-            font-size: 12px;
-        }
-        .filter-btn:hover {
-            color: #4fa3ff !important;
-        }
-        .format-box {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px;
-            border-radius: 6px;
-            border-left: 3px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 2px 2px 8px rgba(255, 255, 255, 0.2);
-            text-align: left;
-            font-size: 12px;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s;
-        }
-        .format-box:hover {
-            transform: translateX(3px);
-            box-shadow: 3px 3px 12px rgba(255, 255, 255, 0.3);
-        }
-        /* Tombol Scroll ke Atas di atas menu Simbol */
-        #scrollToTop {
-            display: none;
-            position: fixed;
-            bottom: 90px; /* Sesuai dengan tinggi menu */
-            right: 20px;
-            background-color: #4fa3ff;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: opacity 0.3s ease-in-out;
-        }
-        #scrollToTop:hover {
-            background-color: #007bff;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prank Heart</title>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle at top, #111, #000);
+    font-family: Arial, sans-serif;
+  }
+
+  /* Hati animasi gemerlap */
+  #heart {
+    position: absolute;
+    font-size: 60px;
+    cursor: pointer;
+    user-select: none;
+    animation: pulse 1s infinite;
+    transition: transform 0.2s ease;
+    z-index: 2;
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); color: #ff4d4d; }
+    50% { transform: scale(1.2); color: #ff99cc; }
+    100% { transform: scale(1); color: #ff4d4d; }
+  }
+
+  /* Teks Usap ke atas */
+  #message {
+    position: absolute;
+    font-size: 0px;
+    background: linear-gradient(90deg, #ff6b8a, #f9d423, #6a11cb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    user-select: none;
+    cursor: grab;
+    width: 200px;
+    height: 100px;
+    pointer-events: none;
+  }
+
+  /* Panah CSS ke atas */
+  #arrow {
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 25px solid #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  /* Tirai dua kain */
+  #curtain {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -100%;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    transition: top 1s ease;
+    z-index: 10;
+  }
+
+  .curtain-left, .curtain-right {
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to bottom, #8B0000 0%, #4B0000 100%);
+    box-shadow: inset 0 0 50px #000;
+    cursor: pointer;
+    transition: transform 1s ease;
+  }
+
+  /* Teks tengah tirai */
+  #curtainText {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 40px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 10px #ff0000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: 11;
+    text-align: center;
+  }
+
+  /* Foto hantu */
+  #ghost {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 80%;
+    display: none;
+    border: 5px solid #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 0px red;
+    filter: blur(20px);
+    opacity: 0;
+    z-index: 5;
+    transition: all 0.1s linear;
+  }
+</style>
 </head>
-<body class="bg-gray-900 text-white">
-    <div class="p-4">
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center space-x-2 w-full relative">
-                <i class="fas fa-gift text-2xl"></i>
-                <div class="relative w-full">
-                    <input id="searchInput" class="w-full bg-gray-800 text-white rounded-lg pl-10 pr-10 py-2 text-sm" placeholder="Search Gift..." type="text" onkeyup="searchProducts()" oninput="toggleClearButton()"/>
-                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm"></i>
-                    <button id="clearSearch" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-sm" onclick="clearSearch()">✖</button>
-                </div>
-            </div>
-        </div>
+<body>
 
-        <!-- Product Grid -->
-        <div id="productGrid" class="grid grid-cols-1 gap-4">
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="winter wreath" data-model="blue burn 0,8%" data-latar="navy blue 2%" data-simbol="toilet 0,3%">
-              <a href="https://t.me/nft/SpicedWine-5781" target="_blank">
-                <img alt="winter wreath #5781" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/yx1SO4U.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="https://t.me/nft/SpicedWine-5781" class="text-blue-400 hover:underline">winter wreath #5781</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/cerbutu" class="text-blue-400">@cerbutu</a></p>
-                <p><strong>Model :</strong> blue burn 0,8%</p>
-                <p><strong>Latar :</strong> navy blue 2%</p>
-                <p><strong>Simbol :</strong> toilet 0,3%</p>
-                <p><strong>Harga :</strong> Rp90.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginget Cookies" data-model="Amaretto 0,6%" data-latar="Pacific Cyan 2%" data-simbol="Mistletoe 1,5%">
-              <a href="https://t.me/nft/GingerCookie-6213" target="_blank">
-                <img alt="Ginger Cookies #6213" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/WDl8XBo.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="https://t.me/nft/GingerCookie-6213" class="text-blue-400 hover:underline">Ginger Cookies #6213</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/bumbleebbee" class="text-blue-400">@bumbleebbee</a></p>
-                <p><strong>Model :</strong> Amaretto 0,6%</p>
-                <p><strong>Latar :</strong> Pacific Cyan 2%</p>
-                <p><strong>Simbol :</strong> Mistletoe 1,5%</p>
-                <p><strong>Harga :</strong> Rp95.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginger Cookies #18150" data-model="Candy Cane 0,7% " data-latar="Neon blue 2%" data-simbol="Fire 0,5%">
-              <a href="https://t.me/nft/GingerCookie-18150" target="_blank">
-                <img alt="Ginger Cookies #18150" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/ot7BkHJ.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="https://t.me/nft/GingerCookie-18150" class="text-blue-400 hover:underline">Ginger Cookies #18150</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/zeorious" class="text-blue-400">@zeorious</a></p>
-                <p><strong>Model :</strong> Candy Cane 0,7% </p>
-                <p><strong>Latar :</strong> Neon blue 2%</p>
-                <p><strong>Simbol :</strong> Fire 0,5%</p>
-                <p><strong>Harga :</strong> Rp80.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginget Cookies" data-model="red scarf 0,8%" data-latar="indigo dye 2%" data-simbol="candy 1,8%">
-              <a href="https://t.me/nft/GingerCookie-11070" target="_blank">
-                <img alt="Ginger Cookies #11070" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/NSZtvOd.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="https://t.me/nft/GingerCookie-11070" class="text-blue-400 hover:underline">Ginger Cookies #11070</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/amafia" class="text-blue-400">@amafia</a></p>
-                <p><strong>Model :</strong> red scarf 0,8%</p>
-                <p><strong>Latar :</strong> indigo dye 2%</p>
-                <p><strong>Simbol :</strong> candy 1,8%</p>
-                <p><strong>Harga :</strong> Rp85.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="ginger cookie" data-model="bordeaux 1,7%" data-latar="burgundy 2%" data-simbol="bunny 0,2%">
-              <a href="http://t.me/nft/GingerCookie-216" target="_blank">
-                <img alt="ginger cookie #216" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="http://i.imgur.com/l5yj0SF.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="http://t.me/nft/GingerCookie-216" class="text-blue-400 hover:underline">ginger cookie #216</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/zrojeo" class="text-blue-400">@zrojeo</a></p>
-                <p><strong>Model :</strong> bordeaux 1,7%</p>
-                <p><strong>Latar :</strong> burgundy 2%</p>
-                <p><strong>Simbol :</strong> bunny 0,2%</p>
-                <p><strong>Harga :</strong> 280.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginger Cookies #11788" data-model="Dandy Candy 0,9%" data-latar="Pacific Cyan 2% " data-simbol="Hourglass 0,5">
-              <a href="http://t.me/nft/GingerCookie-11788" target="_blank">
-                <img alt="Ginger Cookies #11788" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="http://i.imgur.com/ssGxmi6.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="http://t.me/nft/GingerCookie-11788" class="text-blue-400 hover:underline">Ginger Cookies #11788</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/lusstful" class="text-blue-400">@lusstful</a></p>
-                <p><strong>Model :</strong> Dandy Candy 0,9%</p>
-                <p><strong>Latar :</strong> Pacific Cyan 2% </p>
-                <p><strong>Simbol :</strong> Hourglass 0,5</p>
-                <p><strong>Harga :</strong> Rp70.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginger Cookies #14406" data-model="dandy candy 0,9% " data-latar="fandago 2% " data-simbol="wise raven 0,5%">
-              <a href="https://t.me/nft/GingerCookie-14406" target="_blank">
-                <img alt="Ginger Cookies #14406" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/SWrGN4Y.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="https://t.me/nft/GingerCookie-14406" class="text-blue-400 hover:underline">Ginger Cookies #14406</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/kewttam" class="text-blue-400">@kewttam</a></p>
-                <p><strong>Model :</strong> dandy candy 0,9% </p>
-                <p><strong>Latar :</strong> fandago 2% </p>
-                <p><strong>Simbol :</strong> wise raven 0,5%</p>
-                <p><strong>Harga :</strong> Rp150.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Gingger Cookie" data-model="Royal Sundae 1.2%" data-latar="Hunter Green 2%" data-simbol="Thunderbird 0.5%">
-              <a href="https://t.me/nft/GingerCookie-21194" target="_blank">
-                <img alt="Gingger Cookie #21194" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/hL9fK62.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="https://t.me/nft/GingerCookie-21194" class="text-blue-400 hover:underline">Gingger Cookie #21194</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/ChoYihyqun" class="text-blue-400">@ChoYihyqun</a></p>
-                <p><strong>Model :</strong> Royal Sundae 1.2%</p>
-                <p><strong>Latar :</strong> Hunter Green 2%</p>
-                <p><strong>Simbol :</strong> Thunderbird 0.5%</p>
-                <p><strong>Harga :</strong> Rp70.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="ginger cookie" data-model="moon dust 1,6%" data-latar="indigigo dye 2%" data-simbol="apple 0.4%">
-              <a href="http://t.me/nft/GingerCookie-28188" target="_blank">
-                <img alt="ginger cookie #28188" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="http://i.imgur.com/X46DabR.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="http://t.me/nft/GingerCookie-28188" class="text-blue-400 hover:underline">ginger cookie #28188</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/yCarmila" class="text-blue-400">@yCarmila</a></p>
-                <p><strong>Model :</strong> moon dust 1,6%</p>
-                <p><strong>Latar :</strong> indigigo dye 2%</p>
-                <p><strong>Simbol :</strong> apple 0.4%</p>
-                <p><strong>Harga :</strong> Rp68.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginger Cookies" data-model="candy bar 1,7% " data-latar="light olive 1,5% " data-simbol="spanner  0,5%">
-              <a href="http://t.me/nft/GingerCookie-19725" target="_blank">
-                <img alt="Ginger Cookies #19725" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="http://i.imgur.com/lIbiaRZ.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="http://t.me/nft/GingerCookie-19725" class="text-blue-400 hover:underline">Ginger Cookies #19725</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/angeIscrush" class="text-blue-400">@angeIscrush</a></p>
-                <p><strong>Model :</strong> candy bar 1,7% </p>
-                <p><strong>Latar :</strong> light olive 1,5% </p>
-                <p><strong>Simbol :</strong> spanner 0,5%</p>
-                <p><strong>Harga :</strong> Rp70.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="ginger cookies" data-model="hulking 1,7%" data-latar="aquamarine 2% " data-simbol="Xmas tree 1,8%">
-              <a href="http://t.me/nft/GingerCookie-19736" target="_blank">
-                <img alt="ginger cookies #19736" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/g5yK8XQ.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="http://t.me/nft/GingerCookie-19736" class="text-blue-400 hover:underline">ginger cookies #19736</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/angeIscrush" class="text-blue-400">@angeIscrush</a></p>
-                <p><strong>Model :</strong> hulking 1,7%</p>
-                <p><strong>Latar :</strong> aquamarine 2% </p>
-                <p><strong>Simbol :</strong> Xmas tree 1,8%</p>
-                <p><strong>Harga :</strong> Rp50.000</p>
-              </div>
-            </div>
-            
-            <!-- Produk -->
-            <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginger Cookie" data-model="Truffle 1.7%" data-latar="Carrot Juice 1.5%" data-simbol="Fireworks 1.8%">
-              <a href="http://t.me/nft/GingerCookie-5864" target="_blank">
-                <img alt="Ginger Cookie #5864" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="http://i.imgur.com/G1Mif7K.jpeg" width="250" />
-              </a>
-              <div class="font-bold text-md mb-1">
-                <a href="http://t.me/nft/GingerCookie-5864" class="text-blue-400 hover:underline">Ginger Cookie #5864</a>
-              </div>
-            
-              <div class="format-box text-sm">
-                <p><strong>Pemilik:</strong> <a href="https://t.me/pekatJ" class="text-blue-400">@pekatJ</a></p>
-                <p><strong>Model :</strong> Truffle 1.7%</p>
-                <p><strong>Latar :</strong> Carrot Juice 1.5%</p>
-                <p><strong>Simbol :</strong> Fireworks 1.8%</p>
-                <p><strong>Harga :</strong> Rp45.000</p>
-              </div>
-            </div>
-            
-          <!-- Produk -->
-          <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Ginger Cookie!" data-model="Cardamom 1,6%" data-latar="Desert Sand 1%" data-simbol="Anchor 0,4%">
-            <a href="https://t.me/nft/GingerCookie-55980" target="_blank">
-              <img alt="Ginger Cookie! #55980" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/EsgA7kL.jpeg" width="250" />
-            </a>
-            <div class="font-bold text-md mb-1">
-              <a href="https://t.me/nft/GingerCookie-55980" class="text-blue-400 hover:underline">Ginger Cookie! #55980</a>
-            </div>
-          
-            <div class="format-box text-sm">
-              <p><strong>Pemilik:</strong> <a href="https://t.me/Trren" class="text-blue-400">@Trren</a></p>
-              <p><strong>Model :</strong> Cardamom 1,6%</p>
-              <p><strong>Latar :</strong> Desert Sand 1%</p>
-              <p><strong>Simbol :</strong> Anchor 0,4%</p>
-              <p><strong>Harga :</strong> Rp75.000</p>
-            </div>
-          </div>
-          
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="jingle bells" data-model="magnet 1,3%" data-latar="desert sand 2%" data-simbol="festive wreath 2%">
-          <a href="http://t.me/nft/JingleBells-6556" target="_blank">
-            <img alt="Jingle Bells #6556" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="http://i.imgur.com/LUUcqeE.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="http://t.me/nft/JingleBells-6556" class="text-blue-400 hover:underline">jingle bells #6556</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/angeIscrush" class="text-blue-400">@angeIscrush</a></p>
-            <p><strong>Model :</strong> magnet 1,3%</p>
-            <p><strong>Latar :</strong> desert sand 2%</p>
-            <p><strong>Simbol :</strong> festive wreath 2%</p>
-            <p><strong>Harga :</strong> Rp50.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Jingle Bells" data-model="Heatwave 1,5%" data-latar="Malachite 2%" data-simbol="Mistletoe 2,4%">
-          <a href="https://t.me/nft/JingleBells-6842" target="_blank">
-            <img alt="Jingle Bells #6842" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/u316rAO.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="https://t.me/nft/JingleBells-6842" class="text-blue-400 hover:underline">Jingle Bells #6842</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/crqaco" class="text-blue-400">@crqaco</a></p>
-            <p><strong>Model :</strong> Heatwave 1,5%</p>
-            <p><strong>Latar :</strong> Malachite 2%</p>
-            <p><strong>Simbol :</strong> Mistletoe 2,4%</p>
-            <p><strong>Harga :</strong> Rp35.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="jingle bells" data-model="meadow 1,5%" data-latar="strawberry 2,4%" data-simbol="sparks 1,5%">
-          <a href="https://t.me/nft/JingleBells-8916" target="_blank">
-            <img alt="jingle bells #8916" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/QUk4hwg.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="https://t.me/nft/JingleBells-8916" class="text-blue-400 hover:underline">jingle bells #8916</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/qloveily" class="text-blue-400">@qloveily</a></p>
-            <p><strong>Model :</strong>meadow 1,5%</p>
-            <p><strong>Latar :</strong>strawberry 2,4%</p>
-            <p><strong>Simbol :</strong>sparks 1,5%</p>
-            <p><strong>Harga :</strong> Rp252.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="hex pot" data-model="skygold 2,5%" data-latar="Pacific Green 2%" data-simbol="potion 2%">
-          <a href="https://t.me/nft/HexPot-13804" target="_blank">
-            <img alt="hex pot #13804" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/gzw0x1T.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="https://t.me/nft/HexPot-13804" class="text-blue-400 hover:underline">hex pot #13804</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/maklee" class="text-blue-400">@maklee</a></p>
-            <p><strong>Model :</strong> skygold 2,5%</p>
-            <p><strong>Latar :</strong> Pacific Green 2%</p>
-            <p><strong>Simbol :</strong> potion 2%</p>
-            <p><strong>Harga :</strong> Rp55.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Jaster Hat" data-model="Aurora 1.3%" data-latar="Pistachio 1%" data-simbol="Anchor 0.5%">
-          <a href="https://t.me/nft/JesterHat-35227" target="_blank">
-            <img alt="Jaster Hat #35227" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/hjqxXBi.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="https://t.me/nft/JesterHat-35227" class="text-blue-400 hover:underline">Jaster Hat #35227</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/MarIbxoro" class="text-blue-400">@MarIbxoro</a></p>
-            <p><strong>Model :</strong> Aurora 1.3%</p>
-            <p><strong>Latar :</strong> Pistachio 1%</p>
-            <p><strong>Simbol :</strong> Anchor 0.5%</p>
-            <p><strong>Harga :</strong> Rp45.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Jester Hat" data-model="Carnival  1,3%" data-latar="Coral Red  2%" data-simbol="Bread  0,4%">
-          <a href="https://t.me/nft/JesterHat-50637" target="_blank">
-            <img alt="Jester Hat #50637" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/V8ccJJY.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="https://t.me/nft/JesterHat-50637" class="text-blue-400 hover:underline">Jester Hat #50637</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/avengzed" class="text-blue-400">@avengzed</a></p>
-            <p><strong>Model :</strong> Carnival 1,3%</p>
-            <p><strong>Latar :</strong> Coral Red 2%</p>
-            <p><strong>Simbol :</strong> Bread 0,4%</p>
-            <p><strong>Harga :</strong> Rp40.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Jester Het" data-model="Fire Breather 0,5% " data-latar="Neon Blue 2%" data-simbol="Flower 0,4%">
-          <a href="https://t.me/nft/JesterHat-34613" target="_blank">
-            <img alt="Jester Het #34613" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/rMztk6m.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="https://t.me/nft/JesterHat-34613" class="text-blue-400 hover:underline">Jester Het #34613</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/gadisZdesa" class="text-blue-400">@gadisZdesa</a></p>
-            <p><strong>Model :</strong> Fire Breather 0,5% </p>
-            <p><strong>Latar :</strong> Neon Blue 2%</p>
-            <p><strong>Simbol :</strong> Flower 0,4%</p>
-            <p><strong>Harga :</strong> 110.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Jester Hat" data-model="Prankster 1,3%" data-latar="Caramel 1%" data-simbol="Lighting 0,5%">
-          <a href="http://t.me/nft/JesterHat-49283" target="_blank">
-            <img alt="Jester Hat #49283" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/PoILWDo.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="http://t.me/nft/JesterHat-49283" class="text-blue-400 hover:underline">Jester Hat #49283</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/baekgm" class="text-blue-400">@baekgm</a></p>
-            <p><strong>Model :</strong> Prankster 1,3%</p>
-            <p><strong>Latar :</strong> Caramel 1%</p>
-            <p><strong>Simbol :</strong> Lighting 0,5%</p>
-            <p><strong>Harga :</strong> 60.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="Jester Hat" data-model="harley quinn 1.3 0%" data-latar="khaki green 2%" data-simbol="pawn 0.5%">
-          <a href="http://t.me/nft/JesterHat-39631" target="_blank">
-            <img alt="Jester Hat #39631" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/td07MJy.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="http://t.me/nft/JesterHat-39631" class="text-blue-400 hover:underline">Jester Hat #39631</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/Stepyhen" class="text-blue-400">@Stepyhen</a></p>
-            <p><strong>Model :</strong> harley quinn 1.3 0%</p>
-            <p><strong>Latar :</strong> khaki green 2%</p>
-            <p><strong>Simbol :</strong> pawn 0.5%</p>
-            <p><strong>Harga :</strong> Rp45.000</p>
-          </div>
-        </div>
-        
-        <!-- Produk -->
-        <div class="bg-gray-800 rounded-lg p-4 product-card" data-name="eternal candle" data-model="cult candle 1%" data-latar="dark Lilac 2%" data-simbol="Crystal Ball 1,5%">
-          <a href="https://t.me/nft/EternalCandle-1585" target="_blank">
-            <img alt="eternal candle #1585" class="rounded-lg mb-2 mx-auto cursor-pointer" height="250" src="https://i.imgur.com/PZ5qHFr.jpeg" width="250" />
-          </a>
-          <div class="font-bold text-md mb-1">
-            <a href="https://t.me/nft/EternalCandle-1585" class="text-blue-400 hover:underline">eternal candle #1585</a>
-          </div>
-        
-          <div class="format-box text-sm">
-            <p><strong>Pemilik:</strong> <a href="https://t.me/amafia" class="text-blue-400">@amafia</a></p>
-            <p><strong>Model :</strong> cult candle 1%</p>
-            <p><strong>Latar :</strong> dark Lilac 2%</p>
-            <p><strong>Simbol :</strong> Crystal Ball 1,5%</p>
-            <p><strong>Harga :</strong> Rp130.000</p>
-          </div>
-        </div>
-            </div>
-        </div>
+<div id="heart">❤️</div>
+<div id="message">Usap ke atas</div>
+<div id="arrow"></div>
 
-    <!-- Tombol Scroll ke Atas -->
-    <button id="scrollToTop" onclick="scrollToTop()">↑</button>
+<div id="curtain">
+  <div class="curtain-left"></div>
+  <div class="curtain-right"></div>
+</div>
 
-    <!-- Bottom Navigation -->
-    <div class="fixed bottom-0 left-0 right-0 bg-gray-800 p-4">
-        <div class="flex justify-around">
-            <button class="filter-btn flex flex-col items-center text-blue-500 active" onclick="setFilter('name', this)">
-                <i class="fas fa-gift text-lg"></i>
-                <div>Gift</div>
-            </button>
-            <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('model', this)">
-                <i class="fas fa-box text-lg"></i>
-                <div>Model</div>
-            </button>
-            <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('all', this)">
-                <i class="fas fa-home text-lg"></i>
-                <div>Home</div>
-            </button>
-            <button class="filter-btn flex flex-col items-center text-gray-400" onclick="setFilter('latar', this)">
-                <i class="fas fa-image text-lg"></i>
-                <div>Latar</div>
-            </button>
-            <button class="filter-btn flex flex-col items-center text-gray-400 relative" onclick="setFilter('simbol', this)">
-                <i class="fas fa-star text-lg"></i>
-                <div>Simbol</div>
-            </button>
-        </div>
-    </div>
+<div id="curtainText">Klik untuk membuka tirai!</div>
 
-    <script>
-        let activeFilter = 'name';
+<img id="ghost" src="" alt="Hantu">
 
-        function searchProducts() {
-            let input = document.getElementById('searchInput').value.toLowerCase();
-            let cards = document.getElementsByClassName('product-card');
+<script>
+const heart = document.getElementById('heart');
+const message = document.getElementById('message');
+const arrow = document.getElementById('arrow');
+const curtain = document.getElementById('curtain');
+const leftCurtain = document.querySelector('.curtain-left');
+const rightCurtain = document.querySelector('.curtain-right');
+const ghost = document.getElementById('ghost');
+const curtainText = document.getElementById('curtainText');
 
-            for (let card of cards) {
-                let filterValue = card.getAttribute(`data-${activeFilter}`).toLowerCase();
-                card.style.display = filterValue.includes(input) ? 'block' : 'none';
-            }
-        }
+let heartClicked = false;
+let dragging = false;
+let startY = 0;
 
-        function setFilter(filterType, element) {
-            activeFilter = filterType;
-            document.getElementById('searchInput').placeholder = `Search ${filterType}...`;
-            searchProducts();
+// Klik hati → munculkan teks dan panah
+heart.addEventListener('click', () => {
+  heart.style.display = 'none';
+  message.style.fontSize = '50px';
+  message.style.pointerEvents = 'auto';
+  arrow.style.opacity = 1;
+  heartClicked = true;
+});
 
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('text-blue-500', 'active');
-                btn.classList.add('text-gray-400');
-            });
+// Drag/touch untuk geser ke atas → teks & panah hilang
+document.addEventListener('mousedown', (e) => {
+  if (!heartClicked) return;
+  dragging = true;
+  startY = e.clientY;
+});
+document.addEventListener('touchstart', (e) => {
+  if (!heartClicked) return;
+  dragging = true;
+  startY = e.touches[0].clientY;
+});
 
-            element.classList.add('text-blue-500', 'active');
-        }
+document.addEventListener('mousemove', (e) => {
+  if (!dragging) return;
+  let dy = startY - e.clientY;
+  if(dy > 0){
+    message.style.top = `calc(50% - ${dy}px)`;
+    arrow.style.top = `calc(75% - ${dy}px)`;
+    message.style.opacity = 0;
+    arrow.style.opacity = 0;
+  }
+  if(dy > 200){
+    curtain.style.top = '0';
+    curtainText.style.opacity = 1; // tampilkan teks tengah tirai
+  }
+});
+document.addEventListener('touchmove', (e) => {
+  if (!dragging) return;
+  let dy = startY - e.touches[0].clientY;
+  if(dy > 0){
+    message.style.top = `calc(50% - ${dy}px)`;
+    arrow.style.top = `calc(75% - ${dy}px)`;
+    message.style.opacity = 0;
+    arrow.style.opacity = 0;
+  }
+  if(dy > 200){
+    curtain.style.top = '0';
+    curtainText.style.opacity = 1;
+  }
+});
 
-        function toggleClearButton() {
-            let input = document.getElementById('searchInput');
-            let clearButton = document.getElementById('clearSearch');
-            clearButton.classList.toggle('hidden', input.value.length === 0);
-        }
+document.addEventListener('mouseup', () => dragging = false);
+document.addEventListener('touchend', () => dragging = false);
 
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            searchProducts();
-            toggleClearButton();
-        }
+// Tirai diklik → buka kain tirai + foto muncul perlahan + sembunyikan teks
+function openCurtain() {
+  leftCurtain.style.transform = 'translateX(-100%)';
+  rightCurtain.style.transform = 'translateX(100%)';
+  curtainText.style.opacity = 0; // sembunyikan teks saat dibuka
 
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+  setTimeout(() => {
+    ghost.src = 'https://i.imgur.com/nrdLUG4.jpeg';
+    ghost.style.display = 'block';
+    let blur = 20;
+    let opacity = 0;
+    let glow = 0;
 
-        window.addEventListener('scroll', function () {
-            let scrollToTopBtn = document.getElementById("scrollToTop");
-            let firstFormat = document.querySelector('.format-box');
-            if (firstFormat && window.scrollY > firstFormat.offsetTop) {
-                scrollToTopBtn.style.display = 'block';
-            } else {
-                scrollToTopBtn.style.display = 'none';
-            }
-        });
-    </script>
+    const interval = setInterval(() => {
+      if (blur > 0) blur -= 0.66;
+      if (opacity < 1) opacity += 0.022;
+      if (glow < 50) glow += 0.37;
+      ghost.style.filter = `blur(${blur}px)`;
+      ghost.style.opacity = opacity;
+      ghost.style.boxShadow = `0 0 ${glow}px red`;
+      if (blur <= 0 && opacity >= 1 && glow >= 50) clearInterval(interval);
+    }, 100);
+  }, 1000);
+}
+
+leftCurtain.addEventListener('click', openCurtain);
+rightCurtain.addEventListener('click', openCurtain);
+</script>
+
 </body>
 </html>
